@@ -14,11 +14,13 @@ namespace PeliculasAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddAutoMapper(typeof(Startup));
 
-            services.AddControllers();
+            services.AddDbContext<ApplicationDbContext>(opciones =>
+               opciones.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddDbContext<ApplicationDbContext>(opciones =>            
-                opciones.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddControllers();    
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
