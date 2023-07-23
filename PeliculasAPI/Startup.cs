@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using PeliculasAPI.Servicios;
 
 namespace PeliculasAPI
 {
@@ -16,6 +17,9 @@ namespace PeliculasAPI
         {
             services.AddAutoMapper(typeof(Startup));
 
+            services.AddTransient<IAlmacenadorArchivos, AlmacenadorArchivosLocal>();
+            services.AddHttpContextAccessor();
+
             services.AddDbContext<ApplicationDbContext>(opciones =>
                opciones.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
@@ -32,6 +36,8 @@ namespace PeliculasAPI
             }
 
             app.UseHttpsRedirection();
+
+            app.UseStaticFiles();
 
             app.UseRouting();
 
