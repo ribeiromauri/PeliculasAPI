@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PeliculasAPI.DTOs;
 using PeliculasAPI.Entidades;
+using PeliculasAPI.Helpers;
 using PeliculasAPI.Servicios;
 
 namespace PeliculasAPI.Controllers
@@ -25,9 +26,11 @@ namespace PeliculasAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<ActorDTO>>> Get()
+        public async Task<ActionResult<List<ActorDTO>>> Get([FromBody]PaginacionDTO paginacionDTO)
         {
-            var entidades = await context.Actores.ToListAsync();
+            var queryable = context.Actores.AsQueryable();
+            await HttpContext.InsertarParametrosPaginacion(queryable, paginacionDTO.CantidadRegistrosPorPagina);
+            var entidades = await queryable.Paginar(paginacionDTO).ToListAsync();
             return mapper.Map<List<ActorDTO>>(entidades);
         }
 
@@ -101,7 +104,7 @@ namespace PeliculasAPI.Controllers
         }
 
         [HttpPatch("{id}")]
-        public async Task<ActionResult> Patch(int id, [FromBody]JsonPatchDocument patchDocument)
+        public async Task<ActionResult> Patch(int id, [FromBody]JsonPatchDocument<ActorPatchDTO> patchDocument)
         {
             if (patchDocument == null) return BadRequest();
 
@@ -111,7 +114,7 @@ namespace PeliculasAPI.Controllers
 
             var entidadDto = mapper.Map<ActorPatchDTO>(entidadDb);
 
-            patchDocument.ApplyTo(entidadDto, (error) => ModelState.AddModelError("JsonPatch", error.ErrorMessage));
+            patchDocument.ApplyTo(entidadDto, ModelState);
 
             var esValido = TryValidateModel(entidadDto);
 
