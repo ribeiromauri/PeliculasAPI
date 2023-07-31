@@ -3,8 +3,8 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using NetTopologySuite.Geometries;
 using PeliculasAPI;
 
 #nullable disable
@@ -12,9 +12,10 @@ using PeliculasAPI;
 namespace PeliculasAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230731182747_Data")]
+    partial class Data
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -291,62 +292,6 @@ namespace PeliculasAPI.Migrations
                         });
                 });
 
-            modelBuilder.Entity("PeliculasAPI.Entidades.PeliculasSalasDeCine", b =>
-                {
-                    b.Property<int>("SalaDeCineId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PeliculaId")
-                        .HasColumnType("int");
-
-                    b.HasKey("SalaDeCineId", "PeliculaId");
-
-                    b.HasIndex("PeliculaId");
-
-                    b.ToTable("PeliculasSalasDeCines");
-                });
-
-            modelBuilder.Entity("PeliculasAPI.Entidades.SalaDeCine", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Nombre")
-                        .IsRequired()
-                        .HasMaxLength(120)
-                        .HasColumnType("nvarchar(120)");
-
-                    b.Property<Point>("Ubicacion")
-                        .HasColumnType("geography");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("SalasDeCine");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 4,
-                            Nombre = "Multiplex",
-                            Ubicacion = (NetTopologySuite.Geometries.Point)new NetTopologySuite.IO.WKTReader().Read("SRID=4326;POINT (-34.44574111834987 -58.86801623352025)")
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Nombre = "Cinepolis",
-                            Ubicacion = (NetTopologySuite.Geometries.Point)new NetTopologySuite.IO.WKTReader().Read("SRID=4326;POINT (-34.44190200549196 -58.87110170270172)")
-                        },
-                        new
-                        {
-                            Id = 6,
-                            Nombre = "Cinemark TOM",
-                            Ubicacion = (NetTopologySuite.Geometries.Point)new NetTopologySuite.IO.WKTReader().Read("SRID=4326;POINT (-34.451205451449574 -58.72628767262729)")
-                        });
-                });
-
             modelBuilder.Entity("PeliculasAPI.Entidades.PeliculasActores", b =>
                 {
                     b.HasOne("PeliculasAPI.Entidades.Actor", "Actor")
@@ -385,25 +330,6 @@ namespace PeliculasAPI.Migrations
                     b.Navigation("Pelicula");
                 });
 
-            modelBuilder.Entity("PeliculasAPI.Entidades.PeliculasSalasDeCine", b =>
-                {
-                    b.HasOne("PeliculasAPI.Entidades.Pelicula", "Pelicula")
-                        .WithMany("PeliculasSalasDeCines")
-                        .HasForeignKey("PeliculaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("PeliculasAPI.Entidades.SalaDeCine", "SalaDeCine")
-                        .WithMany("PeliculasSalasDeCines")
-                        .HasForeignKey("SalaDeCineId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Pelicula");
-
-                    b.Navigation("SalaDeCine");
-                });
-
             modelBuilder.Entity("PeliculasAPI.Entidades.Actor", b =>
                 {
                     b.Navigation("PeliculasActores");
@@ -414,13 +340,6 @@ namespace PeliculasAPI.Migrations
                     b.Navigation("PeliculasActores");
 
                     b.Navigation("PeliculasGeneros");
-
-                    b.Navigation("PeliculasSalasDeCines");
-                });
-
-            modelBuilder.Entity("PeliculasAPI.Entidades.SalaDeCine", b =>
-                {
-                    b.Navigation("PeliculasSalasDeCines");
                 });
 #pragma warning restore 612, 618
         }

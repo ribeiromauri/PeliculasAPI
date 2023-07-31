@@ -1,5 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using NetTopologySuite.Geometries;
+using NetTopologySuite;
 using PeliculasAPI.Servicios;
+using AutoMapper;
+using PeliculasAPI.Helpers;
 
 namespace PeliculasAPI
 {
@@ -20,8 +24,20 @@ namespace PeliculasAPI
             services.AddTransient<IAlmacenadorArchivos, AlmacenadorArchivosLocal>();
             services.AddHttpContextAccessor();
 
+            services.AddSingleton<GeometryFactory>(NtsGeometryServices.Instance.CreateGeometryFactory(srid: 4326));
+
+            services.AddSingleton(provider =>
+
+                new MapperConfiguration(config =>
+                {
+                    var geometryFactory = provider.GetRequiredService<GeometryFactory>();
+                    config.AddProfile(new AutoMapperProfiles(geometryFactory));
+                }).CreateMapper()
+            );
+
             services.AddDbContext<ApplicationDbContext>(opciones =>
-               opciones.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+               opciones.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"),
+               sqlServerOptions => sqlServerOptions.UseNetTopologySuite()));
 
             services.AddControllers().
                 AddNewtonsoftJson();

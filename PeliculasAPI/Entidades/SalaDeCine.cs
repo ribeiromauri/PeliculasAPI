@@ -1,15 +1,15 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using NetTopologySuite.Geometries;
 
 namespace PeliculasAPI.Entidades
 {
-    public class Actor : IId
+    public class SalaDeCine : IId
     {
         public int Id { get; set; }
         [Required]
         [StringLength(120)]
         public string Nombre { get; set; }
-        public DateTime FechaNacimiento { get; set; }
-        public string Foto { get; set; }
-        public List<PeliculasActores> PeliculasActores { get; set; }
+        public Point Ubicacion { get; set; }
+        public List<PeliculasSalasDeCine> PeliculasSalasDeCines { get; set; }
     }
 }
