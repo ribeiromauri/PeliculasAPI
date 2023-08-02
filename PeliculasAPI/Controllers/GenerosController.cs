@@ -12,8 +12,7 @@ namespace PeliculasAPI.Controllers
     [ApiController]
     [Route("api/generos")]
     public class GenerosController : CustomBaseController
-    {
-        
+    {       
 
         public GenerosController(ApplicationDbContext context, IMapper mapper) : base(context,mapper)
         {            
